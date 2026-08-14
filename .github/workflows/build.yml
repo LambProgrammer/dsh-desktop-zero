@@ -33,10 +33,13 @@ jobs:
 
       # 用 GitHub 官方 CLI（gh）发布 Releases：
       # gh 直接使用仓库自动生成的 GITHUB_TOKEN，无需额外配置。
+      # 使用 bash shell 展开 dist/*.exe 通配符（文件名由 artifactName 生成，
+      # 直接用通配符避免文件名与 tag 版本拼写不一致的问题）。
       - name: Publish to GitHub Releases
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ github.ref_name }}" dist/*.exe `
-            --title "${{ github.ref_name }}" `
+          gh release create "${{ github.ref_name }}" dist/*.exe \
+            --title "${{ github.ref_name }}" \
             --notes "dsh-desktop-zero ${{ github.ref_name }}（非官方社区封装版）"

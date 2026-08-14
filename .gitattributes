@@ -1,0 +1,3 @@
+# 强制 GitHub Actions workflow 文件使用 LF 行尾（避免 CRLF 导致的解析问题）
+.github/workflows/*.yml text eol=lf
+.github/workflows/*.yaml text eol=lf
