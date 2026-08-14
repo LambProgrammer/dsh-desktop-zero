@@ -37,6 +37,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" dist/*.exe `
-            --title "${GITHUB_REF_NAME}" `
-            --notes "dsh-desktop-zero ${GITHUB_REF_NAME}（非官方社区封装版）"
+          gh release create "${{ github.ref_name }}" dist/*.exe `
+            --title "${{ github.ref_name }}" `
+            --notes "dsh-desktop-zero ${{ github.ref_name }}（非官方社区封装版）"
