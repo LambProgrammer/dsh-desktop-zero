@@ -31,12 +31,12 @@ jobs:
       - name: Build installers
         run: npm run build
 
+      # 用 GitHub 官方 CLI（gh）发布 Releases：
+      # gh 直接使用仓库自动生成的 GITHUB_TOKEN，无需额外配置。
       - name: Publish to GitHub Releases
-        uses: softprops/action-gh-release@v2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: |
-            dist/*.exe
-          draft: false
-          prerelease: false
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/*.exe `
+            --title "${GITHUB_REF_NAME}" `
+            --notes "dsh-desktop-zero ${GITHUB_REF_NAME}（非官方社区封装版）"
