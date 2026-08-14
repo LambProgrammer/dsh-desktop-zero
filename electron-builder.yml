@@ -37,6 +37,10 @@ win:
 # 跳过 node-gyp 重编译（本机无需安装 VS 工具链，CI 也更快更稳）。
 npmRebuild: false
 
+# 禁止 electron-builder 自动发布（打包完成看到 tag 时它会尝试自己发布
+# 并报 GH_TOKEN 错误）；发布统一交给 GitHub Actions 的 gh release 步骤。
+publish: never
+
 # ---- NSIS 安装版：桌面快捷方式 + 开始菜单 + 可卸载 ----
 nsis:
   oneClick: false
