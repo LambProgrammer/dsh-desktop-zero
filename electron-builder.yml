@@ -1,0 +1,55 @@
+# dsh-desktop-zero 打包配置（electron-builder）
+# 目标：Windows 下同时生成 NSIS 安装版 + Portable 便携版
+
+appId: com.dsh.desktop.zero
+productName: dsh-desktop-zero
+copyright: "非官方社区封装版（Unofficial community build）"
+
+directories:
+  output: dist
+  buildResources: build
+
+# 不打包 asar：依赖（含原生模块）以真实文件放在 resources/app 下，
+# 避免 asar 内原生模块加载问题，ELECTRON_RUN_AS_NODE 模式最稳。
+asar: false
+
+# 应用代码（生产依赖 node_modules 会被自动复制进 resources/app）
+files:
+  - src/**
+  - package.json
+
+# 按用户要求：将 @deepseek-ai/dsh 复制到 resources 目录（extraResources 配置）。
+# 运行时入口实际从 resources/app/node_modules 解析（完整依赖树），
+# 此规则同时保留以满足"extraResources 必须配置"的约束。
+extraResources:
+  - from: node_modules/@deepseek-ai/dsh
+    to: dsh
+    filter:
+      - "**/*"
+
+win:
+  icon: build/icon.ico
+  target:
+    - nsis
+    - portable
+
+# 原生依赖为 N-API（node-pty/sharp 等），Electron 直接兼容，
+# 跳过 node-gyp 重编译（本机无需安装 VS 工具链，CI 也更快更稳）。
+npmRebuild: false
+
+# ---- NSIS 安装版：桌面快捷方式 + 开始菜单 + 可卸载 ----
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: dsh-desktop-zero
+  uninstallDisplayName: dsh-desktop-zero
+  artifactName: dsh-desktop-zero-Setup-${version}.exe
+
+# ---- Portable 便携版：单文件免安装，不写注册表 ----
+portable:
+  artifactName: dsh-desktop-zero-Portable-${version}.exe
+  # 便携版自解压期间显示此静态图（缓解"双击后长时间无反馈"），
+  # 解压完成后自动进入应用。
+  splashImage: build/splash.bmp

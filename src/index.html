@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' http://127.0.0.1:*; frame-src http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>dsh-desktop-zero</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #121212; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+
+    /* ---- 自绘标题栏 ---- */
+    #titlebar {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      background: #121212;
+      color: #e8e8e8;
+      user-select: none;
+      -webkit-app-region: drag; /* 可拖动窗口 */
+    }
+    #titlebar .app-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 12px;
+      font-size: 13px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    #titlebar .app-title img {
+      width: 18px;
+      height: 18px;
+    }
+    #titlebar .win-controls {
+      margin-left: auto;
+      display: flex;
+      height: 100%;
+      -webkit-app-region: no-drag; /* 按钮区域不可拖动 */
+    }
+    #titlebar .win-controls button {
+      width: 46px;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: #e8e8e8;
+      font-size: 12px;
+      font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+    #titlebar .win-controls button:hover { background: rgba(255, 255, 255, 0.12); }
+    #titlebar .win-controls button.close:hover { background: #e81123; }
+
+    /* ---- DSH 界面容器 ---- */
+    #dsh-frame {
+      width: 100%;
+      height: calc(100% - 36px);
+      border: none;
+      background: #ffffff;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- 自绘标题栏 -->
+  <div id="titlebar">
+    <div class="app-title">
+      <img src="icon.ico" alt="logo" />
+      <span>dsh-desktop-zero</span>
+    </div>
+    <div class="win-controls">
+      <button id="btn-min" title="最小化">&#xE921;</button>
+      <button id="btn-max" title="最大化/还原">&#xE922;</button>
+      <button id="btn-close" class="close" title="关闭">&#xE8BB;</button>
+    </div>
+  </div>
+
+  <!-- DSH 界面（加载时 DSH 已就绪） -->
+  <iframe id="dsh-frame" title="DeepSeek Harness"></iframe>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# dsh-desktop-zero — GitHub Actions 自动打包发布
+# 触发：推送 v* 标签（如 v0.1.0）
+# 产出：NSIS 安装版 + Portable 便携版两个 .exe，并发布到 Releases
+
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build installers
+        run: npm run build
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+          draft: false
+          prerelease: false
