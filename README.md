@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/LambProgrammer/dsh-desktop-zero/blob/main/LICENSE)
-  [![CI](https://github.com/LambProgrammer/dsh-desktop-zero/actions/workflows/build.yml/badge.svg)](https://github.com/LambProgrammer/dsh-desktop-zero/actions/workflows/build.yml)
-  [![Release](https://img.shields.io/github/v/release/LambProgrammer/dsh-desktop-zero)](https://github.com/LambProgrammer/dsh-desktop-zero/releases)
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
+  <img src="https://github.com/LambProgrammer/dsh-desktop-zero/actions/workflows/build.yml/badge.svg" alt="CI" />
+  <img src="https://img.shields.io/github/v/release/LambProgrammer/dsh-desktop-zero" alt="Release" />
 </p>
 
 > ⚠️ **非官方社区封装版（Unofficial community build）**
