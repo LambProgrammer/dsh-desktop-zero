@@ -21,11 +21,15 @@ files:
 # 按用户要求：将 @deepseek-ai/dsh 复制到 resources 目录（extraResources 配置）。
 # 运行时入口实际从 resources/app/node_modules 解析（完整依赖树），
 # 此规则同时保留以满足"extraResources 必须配置"的约束。
+# 同时打包官方 node.exe：DSH 由独立 Node 运行（而非 Electron 内嵌 Node），
+# 使 koffi 原生模块（沙箱 runner/目录选择器等）在正确 ABI 下工作。
 extraResources:
   - from: node_modules/@deepseek-ai/dsh
     to: dsh
     filter:
       - "**/*"
+  - from: resources/node.exe
+    to: node.exe
 
 win:
   icon: build/icon.ico

@@ -81,22 +81,37 @@ function resolveDshHome() {
   return path.join(path.dirname(process.resourcesPath), 'data');
 }
 
+function resolveDshNode() {
+  // 打包模式：使用内置的官方 node.exe（extraResources 复制到 resources/node.exe），
+  // DSH 跑在独立 Node 而非 Electron 内嵌 Node，确保 koffi 原生模块
+  // （沙箱 runner / 目录选择器 / 会话持久化 / ACL 原子写）在正确 ABI 下工作。
+  const candidates = [
+    path.join(process.resourcesPath, 'node.exe'),
+    // 开发模式：使用系统 node（F:\Node.js\node.exe 或 PATH 中的 node）
+    process.env.DSH_DEV_NODE || 'node',
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return 'node';
+}
+
 function startDsh(port) {
   const entry = resolveDshEntry();
+  const dshNode = resolveDshNode();
   // --expose-internals：DSH 的 HMR 服务（cordis-plugin-hmr）必需此 Node 标志。
   const args = ['--expose-internals', entry, 'web', '--host', '127.0.0.1', '--port', String(port)];
-  // 关键：ELECTRON_RUN_AS_NODE=1 让 Electron 以纯 Node 模式运行 DSH CLI，
-  // 而不是再启动一个 Electron GUI 应用。
+  // DSH 由独立 node.exe 运行（非 Electron），process.execPath 即 node.exe，
+  // 沙箱 runner 等 koffi 路径使用正确 ABI。
   // DSH_HOME：独立数据目录，与官方 ~/.dsh 及其他版本完全隔离。
   const dshHome = resolveDshHome();
   console.log(`[dsh-desktop-zero] 数据目录: ${dshHome}`);
+  console.log(`[dsh-desktop-zero] DSH 运行时: ${dshNode}`);
   // SSH_CONNECTION 环境变量：DSH 的目录选择器据此走 browse 后端
-  // （Chromium 原生 showDirectoryPicker），避免 native 后端依赖 koffi
-  // 在 Electron 环境下崩溃（"win32 folder dialog worker exited"）。
-  dshProcess = execFile(process.execPath, args, {
+  // （独立 Node 下 native 后端本应正常，此处保留作为双保险）。
+  dshProcess = execFile(dshNode, args, {
     env: {
       ...process.env,
-      ELECTRON_RUN_AS_NODE: '1',
       DSH_HOME: dshHome,
       SSH_CONNECTION: 'dsh-desktop-zero', // 非空即可触发 browse 分支
     },
